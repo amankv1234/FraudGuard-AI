@@ -66,18 +66,41 @@ docker-compose up --build
 ```
 The app will be available at: **http://localhost:8501**
 
-### 4. Option B: Manual Setup (Python)
+### 4. Option B: Manual Setup (Separate Terminals)
+
+To run the platform locally with full control, follow these steps in separate terminals.
+
+#### **Step 1: Backend Setup (Terminal 1)**
+From the project root:
 ```bash
 # Create Virtual Environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Activate it
+# On Windows:
+venv\Scripts\activate
+# On MacOS/Linux:
+source venv/bin/activate
 
 # Install Dependencies
 pip install -r requirements.txt
 
-# Run the Application
-streamlit run app.py
+# Run the Backend Server
+python server.py
 ```
+The backend will be live at: **http://localhost:8000**
+
+#### **Step 2: Frontend Setup (Terminal 2)**
+Open a new terminal and navigate to the `frontend` folder:
+```bash
+cd frontend
+
+# Install Dependencies
+npm install
+
+# Run the Development Server
+npm run dev
+```
+The dashboard will be available at: **http://localhost:5173** (standard Vite port).
 
 ---
 
