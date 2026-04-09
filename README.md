@@ -73,13 +73,6 @@ To run the platform locally with full control, follow these steps in separate te
 #### **Step 1: Backend Setup (Terminal 1)**
 From the project root:
 ```bash
-# Create Virtual Environment
-python -m venv venv
-# Activate it
-# On Windows:
-venv\Scripts\activate
-# On MacOS/Linux:
-source venv/bin/activate
 
 # Install Dependencies
 pip install -r requirements.txt
