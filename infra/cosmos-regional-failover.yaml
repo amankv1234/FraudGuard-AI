@@ -1,0 +1,10 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: AzureChaos
+metadata:
+  name: cosmos-regional-failover
+spec:
+  action: cosmosdb-failover
+  resourceGroupName: rg-fraudguard-prod
+  accountName: fraudguard-cosmos-triple-store
+  subscriptionId: "SUBSCRIPTION_ID_PLACEHOLDER"
+  duration: "10m"

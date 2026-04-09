@@ -1,0 +1,28 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: ml-endpoint-latency-spike
+spec:
+  action: pod-failure
+  mode: all
+  selector:
+    labelSelectors:
+      "component": "ml-online-endpoint"
+  duration: "60s"
+  scheduler:
+    cron: "@every 2h"
+---
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: ml-latency
+spec:
+  action: delay
+  mode: one
+  selector:
+    labelSelectors:
+      "component": "ml-online-endpoint"
+  delay:
+    latency: "500ms"
+    jitter: "100ms"
+  duration: "5m"

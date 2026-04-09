@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563EB;
+  --color-secondary: #0ea5e9;
+  --radius-2xl: 1rem;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  color: #334155;
+  background-color: #f0f4f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #eef2f7;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.06) 0px, transparent 50%), 
+    radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(37, 99, 235, 0.04) 0px, transparent 50%);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Card System */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+}
+
+.glass-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Sidebar panel */
+.sidebar-section {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+/* Glows */
+.glow-risk {
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2), 0 4px 24px rgba(239, 68, 68, 0.12);
+}
+
+.glow-safe {
+  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.15), 0 4px 24px rgba(37, 99, 235, 0.08);
+}
+
+/* Status badge */
+.badge-fraud {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+.badge-safe {
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+/* Active tab underline */
+.tab-active {
+  border-bottom: 2px solid #2563EB;
+  color: #2563EB;
+}
+
+/* Stat Chip */
+.stat-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(226,232,240,0.8);
+  background: white;
+  color: #475569;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.15); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.3); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.3s ease forwards;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

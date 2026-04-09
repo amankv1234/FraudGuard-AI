@@ -1,0 +1,23 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: eventhubs-partition-kill
+spec:
+  action: partition
+  mode: one
+  selector:
+    namespaces:
+      - fraudguard
+    labelSelectors:
+      "app": "eventhubs-consumer"
+  direction: both
+  target:
+    selector:
+      namespaces:
+        - fraudguard
+      labelSelectors:
+        "app": "eventhubs-consumer"
+    mode: all
+  duration: "30s"
+  scheduler:
+    cron: "@every 1h"

@@ -1,0 +1,11 @@
+creditcard.csv
+creditcard_synthetic.csv
+experience_bank.json
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+__pycache__/
+**/.env
+*.db
+.gemini/
