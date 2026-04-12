@@ -19,6 +19,8 @@ const MOCK_DATA = [
   { txnId: "TX-103", vpa: "merch_88@merchant", amount: 98000, city: "Chennai", timestamp: new Date().toISOString(), txnType: "QR_PUSH", riskScore: 0.88 },
 ];
 
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [transactions, setTransactions] = useState(MOCK_DATA);
@@ -30,7 +32,7 @@ function App() {
 
   const fetchMemoryLogs = async () => {
     try {
-      const res = await fetch('http://localhost:8000/memory_logs');
+      const res = await fetch(`${API_BASE}/memory_logs`);
       const data = await res.json();
       setMemoryLogs(data.logs || []);
     } catch (e) { /* silent */ }
@@ -40,7 +42,7 @@ function App() {
     fetchMemoryLogs();
 
     // Connect to Live SSE Stream
-    const eventSource = new EventSource('http://localhost:8000/stream');
+    const eventSource = new EventSource(`${API_BASE}/stream`);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -78,7 +80,7 @@ function App() {
         city: manualData.city
       };
 
-      const response = await fetch('http://localhost:8000/analyze_transaction', {
+      const response = await fetch(`${API_BASE}/analyze_transaction`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -110,7 +112,7 @@ function App() {
     if (!currentTxn?.txnId) return;
     try {
       setLearningStatus(`Triggering Hindsight reflect()...`);
-      const response = await fetch('http://localhost:8000/feedback', {
+      const response = await fetch(`${API_BASE}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ txnId: currentTxn.txnId, label })

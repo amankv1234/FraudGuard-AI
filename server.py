@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse, FileResponse
 import asyncio
 import json
 import random
@@ -43,6 +44,8 @@ hindsight.load_memory()
 # Keep track of DNA evolution for charting
 weight_history = [hindsight.dna.weights.copy()]
 
+# --- API ROUTES ---
+
 @app.get("/status")
 async def get_status():
     return {
@@ -78,11 +81,9 @@ async def stream_transactions():
     """Server-Sent Events stream for transactions with Hindsight."""
     async def event_generator():
         while True:
-            # 1. Generate Transaction
             fraud_type = random.choice([None, None, None, "velocity", "travel"])
             txn = simulator.generate_transaction(fraud_type)
             
-            # 2. Extract Signals
             signals = {
                 "ml_anomaly": random.uniform(0, 0.4) if not fraud_type else random.uniform(0.7, 0.95),
                 "vector_sim": vector_store.get_max_similarity(txn),
@@ -92,10 +93,7 @@ async def stream_transactions():
                 "time_anomaly": 0.1 if random.randint(0, 10) > 2 else 0.9
             }
             
-            # 3. Predict using Hindsight
             risk_score, historical_matches, source = hindsight.predict(txn, signals)
-            
-            # 4. Retain in Memory
             emb = vector_store.get_transaction_embedding(txn)
             hindsight.retain(txn, emb, risk_score)
             
@@ -111,36 +109,26 @@ async def stream_transactions():
                 payload["explanation"] = base_agent.explain_decision(txn, risk_score, signals)
             
             yield f"data: {json.dumps(payload)}\n\n"
-            await asyncio.sleep(3) # Slightly slower for readability
+            await asyncio.sleep(3)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 @app.post("/feedback")
 async def handle_feedback(payload: dict = Body(...)):
-    """System reflects and learns from user feedback."""
     txn_id = payload.get("txnId")
-    label = payload.get("label") # 'fraud' or 'legit'
-    
+    label = payload.get("label")
     was_learned = hindsight.reflect(txn_id, label)
     if was_learned:
         weight_history.append(hindsight.dna.weights.copy())
-        hindsight.save_memory() # Persist memory after learning
-    
-    return {
-        "status": "success",
-        "learned": was_learned,
-        "message": "Hindsight reflection complete. DNA adjusted." if was_learned else "Feedback recorded."
-    }
+        hindsight.save_memory()
+    return {"status": "success", "learned": was_learned}
 
-@app.post("/analyze")
 @app.post("/analyze_transaction")
 async def analyze_transaction(txn: dict):
-    # Manual trigger logic with hindsight
     try:
         raw_amt = txn.get('amount', 0)
         amt = float(raw_amt) if raw_amt else 0
-    except (ValueError, TypeError):
-        amt = 0
+    except: amt = 0
 
     signals = {
         "ml_anomaly": random.uniform(0.4, 0.6),
@@ -157,7 +145,6 @@ async def analyze_transaction(txn: dict):
     debate = base_agent.generate_debate(txn, risk_score, signals)
     latency_ms = int((time.time() - start_time) * 1000)
     
-    # NEW: Retain manual analysis in memory for React visibility before returning
     emb = vector_store.get_transaction_embedding(txn)
     hindsight.retain(txn, emb, risk_score)
     
@@ -171,12 +158,24 @@ async def analyze_transaction(txn: dict):
         },
         "explanation": explanation,
         "debate": debate,
-        "signals": signals,
-        "source": source,
-        "matches": [m['txn'] for m in matches],
         "latency": f"{latency_ms}ms"
     }
+
+# --- STATIC FILES & FRONTEND ROUTING ---
+
+# Mount the React build directory
+if os.path.exists("frontend/dist"):
+    app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    # If the path matches an API route, let FastAPI handle it (already handled above)
+    # Otherwise, serve index.html for React Router
+    if os.path.exists("frontend/dist/index.html"):
+        return FileResponse("frontend/dist/index.html")
+    return {"error": "Frontend build not found. Run 'npm run build' in frontend folder."}
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
