@@ -118,4 +118,3 @@ The system includes configuration for **Chaos Mesh** and automated DNA mutation 
 > "FraudGuard AI v2.0: The world's first EVOLUTIONARY fraud detection system. From UPI Event Hubs to Fraud DNA mutations, we've engineered NPCI-scale protection that gets 83% BETTER every month – automatically."
 
 ---
-Developed for **Chennai Hackathon 2026**. Azure-native. Production-ready. India-first. 🇮🇳
